@@ -1,7 +1,7 @@
 import { Schema, model } from "mongoose";
-import { subcategories } from "../interfaces/subcategories";
+import { Subcategories } from "../interfaces/subcategories";
 
-const subcategoriesShema: Schema = new Schema<subcategories>(
+const subcategoriesSchema: Schema = new Schema<Subcategories>(
   {
     name: { type: String, required: true, trim: true },
     image: String,
@@ -9,3 +9,10 @@ const subcategoriesShema: Schema = new Schema<subcategories>(
   },
   { timestamps: true }
 );
+
+subcategoriesSchema.pre<Subcategories>(/^find/, function (next) {
+  this.populate({ path: "category", select: "name" });
+  next();
+});
+
+export default model<Subcategories>("subcategories", subcategoriesSchema);
