@@ -1,5 +1,5 @@
-import { Categories } from "./../interfaces/categories";
 import categoriesModel from "../models/categoriesModel";
+import { Categories } from "../interfaces/categories";
 import {
   createOne,
   deleteOne,

@@ -1,8 +1,8 @@
-import { Document } from 'mongodb';
-import { Categories } from './categories';
+import { Document } from "mongodb";
+import { Categories } from "./categories";
 
 export interface Subcategories extends Document {
-    name: string
-    image: string
-    category: Categories
+  name: string;
+  image: string;
+  category: Categories;
 }
