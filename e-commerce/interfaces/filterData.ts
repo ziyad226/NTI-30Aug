@@ -1,3 +1,3 @@
-export interface FiltetData {
-    category?: any;
+export interface FilterData {
+  category?: any;
 }

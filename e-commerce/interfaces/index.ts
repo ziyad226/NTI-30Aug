@@ -1,8 +1,10 @@
-import { FiltetData } from "./filterData";
+import { FilterData } from "./filterData";
+import { Users } from "./users";
 
 declare module "express" {
   interface Request {
-    filterData?: FiltetData;
+    filterData?: FilterData;
+    user?: Users;
     files?: any;
   }
 }

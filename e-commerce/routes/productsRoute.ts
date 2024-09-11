@@ -1,35 +1,49 @@
 import { Router } from "express";
 import {
-  createProduct,
-  deleteProduct,
-  getAllProducts,
-  getProduct,
-  updateProduct,
-  uploadProductImages,
-  resizeProductImages,
-} from "../controllers/products";
+  createCategory,
+  deleteCategory,
+  getAllCategories,
+  getCategory,
+  updateCategory,
+} from "../controllers/categories";
 import {
-  createProductValidator,
-  deleteProductValidator,
-  getProductValidator,
-  updateProductValidator,
-} from "../utils/validators/productsValidator";
+  createCategoryValidator,
+  deleteCategoryValidator,
+  getCategoryValidator,
+  updateCategoryValidator,
+} from "../utils/validators/categoriesValidator";
+import subcategoriesRoute from "./subcategoriesRoute";
+import { allowedTo, checkActive, protectRoutes } from "../controllers/auth";
 
-const productsRoute: Router = Router();
-productsRoute
+const categoriesRoute: Router = Router();
+categoriesRoute.use("/:categoryId/subcategories", subcategoriesRoute);
+categoriesRoute
   .route("/")
-  .get(getAllProducts)
+  .get(getAllCategories)
   .post(
-    uploadProductImages,
-    resizeProductImages,
-    createProductValidator,
-    createProduct
+    protectRoutes,
+    checkActive,
+    allowedTo("manager", "admin"),
+    createCategoryValidator,
+    createCategory
   );
 
-productsRoute
+categoriesRoute
   .route("/:id")
-  .get(getProductValidator, getProduct)
-  .put(updateProductValidator, updateProduct)
-  .delete(deleteProductValidator, deleteProduct);
+  .get(getCategoryValidator, getCategory)
+  .put(
+    protectRoutes,
+    checkActive,
+    allowedTo("manager", "admin"),
+    updateCategoryValidator,
+    updateCategory
+  )
+  .delete(
+    protectRoutes,
+    checkActive,
+    allowedTo("manager", "admin"),
+    deleteCategoryValidator,
+    deleteCategory
+  );
 
-export default productsRoute;
+export default categoriesRoute;
