@@ -1,5 +1,5 @@
-import { NextFunction, Request, Response } from "express";
-import { CustomErrors } from "../interfaces/customErrors";
+import { NextFunction, Request, Response } from 'express';
+import { CustomErrors } from '../interfaces/customErrors';
 
 const globalErrors = (
   error: CustomErrors,
@@ -8,8 +8,8 @@ const globalErrors = (
   next: NextFunction
 ) => {
   error.statusCode = error.statusCode || 500;
-  error.status = error.status || "server error";
-  if (process.env.NODE_ENV === "development") {
+  error.status = error.status || 'server error';
+  if (process.env.NODE_ENV === 'development') {
     res.status(error.statusCode).json({
       error,
       message: error.message,

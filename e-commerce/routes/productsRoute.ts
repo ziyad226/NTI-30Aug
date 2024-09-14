@@ -1,49 +1,53 @@
-import { Router } from "express";
+import { Router } from 'express';
 import {
-  createCategory,
-  deleteCategory,
-  getAllCategories,
-  getCategory,
-  updateCategory,
-} from "../controllers/categories";
+  createProduct,
+  deleteProduct,
+  getAllProducts,
+  getProduct,
+  resizeProductImages,
+  updateProduct,
+  uploadProductImages,
+} from '../controllers/products';
 import {
-  createCategoryValidator,
-  deleteCategoryValidator,
-  getCategoryValidator,
-  updateCategoryValidator,
-} from "../utils/validators/categoriesValidator";
-import subcategoriesRoute from "./subcategoriesRoute";
-import { allowedTo, checkActive, protectRoutes } from "../controllers/auth";
+  createProductValidator,
+  deleteProductValidator,
+  getProductValidator,
+  updateProductValidator,
+} from '../utils/validators/productsValidator';
+import { allowedTo, checkActive, protectRoutes } from '../controllers/auth';
+import reviewsRoute from './reviewsRoute';
 
-const categoriesRoute: Router = Router();
-categoriesRoute.use("/:categoryId/subcategories", subcategoriesRoute);
-categoriesRoute
-  .route("/")
-  .get(getAllCategories)
+const productsRoute: Router = Router();
+productsRoute.use('/:productId/reviews', reviewsRoute);
+productsRoute
+  .route('/')
+  .get(getAllProducts)
   .post(
     protectRoutes,
     checkActive,
-    allowedTo("manager", "admin"),
-    createCategoryValidator,
-    createCategory
+    allowedTo('manager', 'admin'),
+    uploadProductImages,
+    resizeProductImages,
+    createProductValidator,
+    createProduct
   );
 
-categoriesRoute
-  .route("/:id")
-  .get(getCategoryValidator, getCategory)
+productsRoute
+  .route('/:id')
+  .get(getProductValidator, getProduct)
   .put(
     protectRoutes,
     checkActive,
-    allowedTo("manager", "admin"),
-    updateCategoryValidator,
-    updateCategory
+    allowedTo('manager', 'admin'),
+    updateProductValidator,
+    updateProduct
   )
   .delete(
     protectRoutes,
     checkActive,
-    allowedTo("manager", "admin"),
-    deleteCategoryValidator,
-    deleteCategory
+    allowedTo('manager', 'admin'),
+    deleteProductValidator,
+    deleteProduct
   );
 
-export default categoriesRoute;
+export default productsRoute;
