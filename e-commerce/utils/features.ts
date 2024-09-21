@@ -1,9 +1,9 @@
-import { Query } from "mongoose";
+import { Query } from 'mongoose';
 import {
   PaginationQuery,
   QueryString,
   SearchQuery,
-} from "../interfaces/features";
+} from '../interfaces/features';
 
 class Features {
   public paginationResult: PaginationQuery;
@@ -15,11 +15,11 @@ class Features {
   filter() {
     const queryStringObj = { ...this.queryString };
     const executedFields: string[] = [
-      "page",
-      "limit",
-      "sort",
-      "fields",
-      "search",
+      'page',
+      'limit',
+      'sort',
+      'fields',
+      'search',
     ];
     executedFields.forEach((field: string): void => {
       delete queryStringObj[field];
@@ -35,16 +35,16 @@ class Features {
 
   sort() {
     if (this.queryString.sort) {
-      const sortBy: string = this.queryString.sort.split(",").join(" ");
+      const sortBy: string = this.queryString.sort.split(',').join(' ');
       this.mongooseQuery = this.mongooseQuery.sort(sortBy);
     } else {
-      this.mongooseQuery = this.mongooseQuery.sort("-createdAt");
+      this.mongooseQuery = this.mongooseQuery.sort('-createdAt');
     }
     return this;
   }
   limitFields() {
     if (this.queryString.fields) {
-      const fields: string = this.queryString.fields.split(",").join(" ");
+      const fields: string = this.queryString.fields.split(',').join(' ');
       this.mongooseQuery = this.mongooseQuery.select(fields);
     }
     // else { this.mongooseQuery = this.mongooseQuery.select('-__v'); }
@@ -53,14 +53,14 @@ class Features {
   search(modelName: string) {
     if (this.queryString.search) {
       let query: SearchQuery = {};
-      if (modelName === "products") {
+      if (modelName === 'products') {
         query.$or = [
-          { name: new RegExp(this.queryString.search, "i") },
-          { description: new RegExp(this.queryString.search, "i") },
-          { price: new RegExp(this.queryString.search, "i") },
+          { name: new RegExp(this.queryString.search, 'i') },
+          { price: new RegExp(this.queryString.search, 'i') },
+          { description: new RegExp(this.queryString.search, 'i') },
         ];
       } else {
-        query = { name: new RegExp(this.queryString.search, "i") };
+        query = { name: new RegExp(this.queryString.search, 'i') };
       }
       this.mongooseQuery = this.mongooseQuery.find(query);
     }
@@ -74,7 +74,6 @@ class Features {
     const endIndex: number = page * limit;
     const pagination: PaginationQuery = {};
     pagination.currentPage = Number(page);
-    pagination.limit = Number(limit);
     pagination.totalPages = Math.ceil(documentsCount / limit);
     if (endIndex < documentsCount) {
       pagination.next = Number(page) + 1;

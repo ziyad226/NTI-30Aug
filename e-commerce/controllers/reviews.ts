@@ -22,6 +22,7 @@ export const filterReviews = (
   if (req.user?.role === 'user' && !req.params.productId) {
     filterData.user = req.user._id;
   }
+  req.filterData = filterData;
   next();
 };
 export const setProductAndUserId = (
