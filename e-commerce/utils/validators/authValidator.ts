@@ -1,92 +1,94 @@
-import { RequestHandler } from "express";
-import { check } from "express-validator";
-import validatorMiddleware from "../../middlewares/validatorMiddleware";
-import categoriesModel from "../../models/categoriesModel";
-import usersModel from "../../models/usersModel";
+import { RequestHandler } from 'express';
+import { check } from 'express-validator';
+import validatorMiddleware from '../../middlewares/validatorMiddleware';
+import usersModel from '../../models/usersModel';
 
 export const signupValidator: RequestHandler[] = [
-  check("name")
+  check('name')
     .notEmpty()
-    .withMessage("user name required")
+    .withMessage('user name required')
     .isLength({ min: 2, max: 50 })
-    .withMessage("name length must be between 2 & 50"),
-  check("email")
+    .withMessage('name length must be between 2 & 50'),
+  check('email')
     .notEmpty()
-    .withMessage("Email is Required")
+    .withMessage('Email is Required')
     .isEmail()
-    .withMessage("Invalid Email")
+    .withMessage('Invalid Email')
     .custom(async (val: string) => {
       const user = await usersModel.findOne({ email: val });
       if (user) {
-        throw new Error("Email is already exist");
+        throw new Error('Email is already exist');
       }
       return true;
     }),
-  check("role")
+  check('role')
     .optional()
     .custom((val: string, { req }) => {
-      req.body.role = "user";
+      req.body.role = 'user';
       return true;
     }),
-  check("password")
+  check('password')
     .notEmpty()
-    .withMessage("password is required")
+    .withMessage('password is required')
     .isLength({ min: 6, max: 20 })
-    .withMessage("password length from 6 to 20 char")
+    .withMessage('password length from 6 to 20 char')
     .custom((val: string, { req }) => {
       if (val !== req.body.confirmPassword) {
         throw new Error("password doesn't match");
       }
       return true;
     }),
-  check("confirmPassword")
+  check('confirmPassword')
     .notEmpty()
-    .withMessage("password is required")
+    .withMessage('password is required')
     .isLength({ min: 6, max: 20 })
-    .withMessage("password length from 6 to 20 char"),
-  check("phone").optional().isMobilePhone(["ar-EG"]),
+    .withMessage('password length from 6 to 20 char'),
+  check('phone')
+    .optional()
+    .isMobilePhone(['ar-EG'])
+    .withMessage('invalid phone number'),
   validatorMiddleware,
 ];
 
 export const loginValidator: RequestHandler[] = [
-  check("email")
+  check('email')
     .notEmpty()
-    .withMessage("Email is Required")
+    .withMessage('Email is Required')
     .isEmail()
-    .withMessage("Invalid Email"),
-  check("password")
+    .withMessage('Invalid Email'),
+  check('password')
     .notEmpty()
-    .withMessage("password is required")
+    .withMessage('password is required')
     .isLength({ min: 6, max: 20 })
-    .withMessage("password length from 6 to 20 char"),
+    .withMessage('password length from 6 to 20 char'),
   validatorMiddleware,
 ];
 
 export const forgetPasswordValidator: RequestHandler[] = [
-  check("email")
+  check('email')
     .notEmpty()
-    .withMessage("Email is Required")
+    .withMessage('Email is Required')
     .isEmail()
-    .withMessage("Invalid Email"),
+    .withMessage('Invalid Email'),
   validatorMiddleware,
 ];
 
 export const resetPasswordValidator: RequestHandler[] = [
-  check("password")
+  check('password')
     .notEmpty()
-    .withMessage("password is required")
+    .withMessage('password is required')
     .isLength({ min: 6, max: 20 })
-    .withMessage("password length from 6 to 20 char")
+    .withMessage('password length from 6 to 20 char')
     .custom((val: string, { req }) => {
       if (val !== req.body.confirmPassword) {
         throw new Error("password doesn't match");
       }
       return true;
     }),
-  check("confirmPassword")
+  check('confirmPassword')
     .notEmpty()
-    .withMessage("password is required")
+    .withMessage('password is required')
     .isLength({ min: 6, max: 20 })
-    .withMessage("password length from 6 to 20 char"),
+    .withMessage('password length from 6 to 20 char'),
   validatorMiddleware,
 ];

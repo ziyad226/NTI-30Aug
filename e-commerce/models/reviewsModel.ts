@@ -23,7 +23,6 @@ reviewsSchema.statics.calcRatingAndQuantity = async function (productId) {
       },
     },
   ]);
-  console.log(result);
   if (result.length > 0) {
     await productsModel.findByIdAndUpdate(productId, {
       ratingAverage: result[0].avgRating,
@@ -40,9 +39,44 @@ reviewsSchema.statics.calcRatingAndQuantity = async function (productId) {
 reviewsSchema.post<Reviews>('save', async function () {
   await (this.constructor as any).calcRatingAndQuantity(this.product);
 });
-reviewsSchema.post<Reviews>('findOneAndDelete', async function () {
-  await (this.constructor as any).calcRatingAndQuantity(this.product);
+
+/* reviewsSchema.post<Reviews>('remove', async function ()
+{ await (this.constructor as any).calcRatingAndQuantity(this.product) })*/
+// TODO: Fix the above line to work with Mongoose 6.0.0
+// reviewsSchema.post<Reviews>('remove', async function (doc) {
+//   await (doc.constructor as any).calcRatingAndQuantity(doc.product);
+// });
+
+//* me
+
+// reviewsSchema.post<Reviews>('findOneAndDelete', async function (doc) {
+//   const reviewDoc = doc as unknown as Reviews;
+//   if (reviewDoc.product) {
+//     await (reviewDoc.constructor as any).calcRatingAndQuantity(
+//       reviewDoc.product
+//     );
+//   }
+// });
+
+//* from the engineer
+
+reviewsSchema.post<Reviews>('findOneAndDelete', async function (doc: Reviews) {
+  // const reviewDoc = doc as unknown as Reviews;
+  if (doc.product) {
+    await (doc.constructor as any).calcRatingAndQuantity(doc.product);
+  }
 });
+
+// reviewsSchema.post<Reviews>('findOneAndDelete', async function (doc) {
+//   // Type assertion with guard clause
+//   if (doc instanceof Reviews && doc.product) {
+//     await doc.constructor.calcRatingAndQuantity(doc.product);
+//   } else {
+//     console.error(
+//       'Unexpected document type in findOneAndDelete post middleware'
+//     );
+//   }
+// });
 
 reviewsSchema.pre<Reviews>(/^find/, function (next) {
   this.populate({ path: 'user', select: 'name image' });

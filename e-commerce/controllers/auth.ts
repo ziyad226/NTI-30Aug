@@ -173,7 +173,9 @@ export const resetCode = asyncHandler(
   }
 );
 
-export const limitRequest = rateLimit({
-  windowMs: 60 * 60 * 1000,
+export const authLimit = rateLimit({
+  windowMs: 60,
   limit: 5,
+  message: 'try again later',
+  skipSuccessfulRequests: true,
 });
